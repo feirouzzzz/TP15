@@ -1,0 +1,33 @@
+enum NatureCompte {
+    COURANT
+    EPARGNE
+}
+
+type Query {
+    comptes: [Compte]
+    compte(id: ID): Compte
+    statistiquesSoldes: ResumeSoldes
+}
+
+type Compte {
+    id: ID
+    solde: Float
+    dateCreation: String
+    nature: NatureCompte
+}
+
+type Mutation {
+    creerCompte(input: NouveauCompte): Compte
+}
+
+input NouveauCompte {
+    solde: Float
+    dateCreation: String
+    nature: NatureCompte
+}
+
+type ResumeSoldes {
+    total: Int
+    somme: Float
+    moyenne: Float
+}
