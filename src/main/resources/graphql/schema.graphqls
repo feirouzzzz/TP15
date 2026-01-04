@@ -1,33 +1,81 @@
-enum NatureCompte {
-    COURANT
-    EPARGNE
+# Définition des types de comptes
+enum AccountType {
+    CHECKING
+    SAVINGS
 }
 
-type Query {
-    comptes: [Compte]
-    compte(id: ID): Compte
-    statistiquesSoldes: ResumeSoldes
-}
-
-type Compte {
+# Objet représentant un compte bancaire
+type BankAccount {
     id: ID
-    solde: Float
-    dateCreation: String
-    nature: NatureCompte
+    balance: Float
+    creationDate: String
+    accountType: AccountType
 }
 
+# Type pour les statistiques globales des comptes
+type AccountStats {
+    totalCount: Int
+    totalBalance: Float
+    averageBalance: Float
+}
+
+# Requêtes disponibles
+type Query {
+    listAccounts: [BankAccount]
+    getAccount(id: ID!): BankAccount
+    getAccountStats: AccountStats
+}
+
+# Input pour créer un compte
+input BankAccountInput {
+    balance: Float!
+    creationDate: String!
+    accountType: AccountType!
+}
+
+# Mutations disponibles
 type Mutation {
-    creerCompte(input: NouveauCompte): Compte
+    createAccount(account: BankAccountInput): BankAccount
 }
 
-input NouveauCompte {
-    solde: Float
-    dateCreation: String
-    nature: NatureCompte
+# Enum pour les types de transaction
+enum TransactionKind {
+    DEPOSIT
+    WITHDRAWAL
 }
 
-type ResumeSoldes {
-    total: Int
-    somme: Float
-    moyenne: Float
+# Type pour une transaction bancaire
+type BankTransaction {
+    id: ID
+    transactionDate: String
+    amount: Float
+    transactionKind: TransactionKind
+    account: BankAccount
+}
+
+# Input pour ajouter une transaction
+input BankTransactionInput {
+    accountId: ID!
+    amount: Float!
+    transactionDate: String!
+    transactionKind: TransactionKind!
+}
+
+# Type pour les statistiques de transaction
+type BankTransactionStats {
+    totalCount: Int
+    totalDeposits: Float
+    totalWithdrawals: Float
+}
+
+# Extensions des requêtes
+extend type Query {
+    getAccountTransactions(accountId: ID!): [BankTransaction]
+    listTransactions: [BankTransaction]
+    getTransactionStats: BankTransactionStats
+}
+
+# Extensions des mutations
+extend type Mutation {
+    addTransaction(transaction: BankTransactionInput): BankTransaction
 }
